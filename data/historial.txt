@@ -1,0 +1,17 @@
+[18:22:18] Servidor: victor se ha unido al chat.
+[18:22:42] Servidor: ivan se ha unido al chat.
+[18:22:55] victor: Buenas gente
+[18:23:01] ivan: Que pasa tete
+[18:23:08] victor: Todo bien?
+[18:23:12] ivan: Yesss
+[18:23:18] ivan: Adrian tu que tal
+[18:24:06] Servidor: ivan ha salido del chat.
+[18:24:07] Servidor: victor ha salido del chat.
+[18:28:47] Servidor: victor se ha unido al chat.
+[18:28:58] Servidor: ivan se ha unido al chat.
+[18:29:35] Servidor: adriAN se ha unido al chat.
+[18:29:38] Servidor: adriAN ha salido del chat.
+[18:29:58] victor: Hoal
+[18:30:04] ivan: quetal
+[18:31:03] Servidor: ivan ha salido del chat.
+[18:31:07] Servidor: victor ha salido del chat.

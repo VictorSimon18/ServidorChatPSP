@@ -15,3 +15,70 @@
 [18:30:04] ivan: quetal
 [18:31:03] Servidor: ivan ha salido del chat.
 [18:31:07] Servidor: victor ha salido del chat.
+[19:40:51] Servidor: victor se ha unido al chat.
+[19:41:02] Servidor: victor ha salido del chat.
+[19:42:37] Servidor: ivan se ha unido al chat.
+[19:42:43] Servidor: victor se ha unido al chat.
+[19:42:47] ivan: Que paasaa
+[19:42:50] victor: Holaa
+[19:43:01] Servidor: victor ha salido del chat.
+[19:43:02] Servidor: ivan ha salido del chat.
+[19:44:06] Servidor: ivan se ha unido al chat.
+[19:44:12] Servidor: victor se ha unido al chat.
+[19:44:17] victor: Que pasa tete
+[19:44:24] ivan: hola
+[19:44:32] victor: me pican los cocos
+[19:47:01] Servidor: ivan ha salido del chat.
+[19:47:02] Servidor: victor ha salido del chat.
+[19:58:13] Servidor: ivan se ha unido al chat.
+[19:58:17] ivan: hola
+[19:59:46] Servidor: victor se ha unido al chat.
+[19:59:53] victor: quetaal
+[20:00:30] Servidor: victor ha salido del chat.
+[20:02:37] Servidor: ivan ha salido del chat.
+[20:02:47] Servidor: ivan se ha unido al chat.
+[20:02:59] Servidor: victor se ha unido al chat.
+[20:03:08] ivan: desconectado
+[20:03:13] Servidor: victor ha salido del chat.
+[20:03:43] Servidor: ivan ha salido del chat.
+[20:05:11] Servidor: ivan se ha unido al chat.
+[20:05:29] Servidor: ivan ha salido del chat.
+[20:05:40] Servidor: ivan se ha unido al chat.
+[20:05:43] Servidor: ivan ha salido del chat.
+[20:12:05] Servidor: ivan se ha unido al chat.
+[20:12:09] Servidor: ivan ha salido del chat.
+[20:12:37] Servidor: ivan se ha unido al chat.
+[20:12:51] Servidor: victor se ha unido al chat.
+[20:12:54] victor: holaa
+[20:15:14] Servidor: ivan ha salido del chat.
+[20:15:17] Servidor: victor ha salido del chat.
+[20:23:34] Servidor: ivan se ha unido al chat.
+[20:23:46] Servidor: ivan ha salido del chat.
+[20:50:32] Servidor: ivan se ha unido al chat.
+[20:50:37] Servidor: ivan ha salido del chat.
+[20:50:40] Servidor: ivan se ha unido al chat.
+[20:50:43] Servidor: ivan ha salido del chat.
+[20:50:59] Servidor: rafa se ha unido al chat.
+[20:51:01] Servidor: rafa ha salido del chat.
+[20:52:02] Servidor: ivan se ha unido al chat.
+[20:52:03] Servidor: ivan ha salido del chat.
+[20:53:18] Servidor: ivan se ha unido al chat.
+[20:53:25] Servidor: ivan ha salido del chat.
+[20:55:53] Servidor: ivan se ha unido al chat.
+[20:56:00] Servidor: ivan ha salido del chat.
+[20:57:48] Servidor: ivan se ha unido al chat.
+[20:57:59] Servidor: victor se ha unido al chat.
+[20:58:04] ivan: hola
+[20:58:10] victor: queloq
+[20:58:11] Servidor: victor ha salido del chat.
+[20:58:13] Servidor: ivan ha salido del chat.
+[20:59:07] Servidor: ivan se ha unido al chat.
+[20:59:18] Servidor: victor se ha unido al chat.
+[20:59:22] victor: hoa
+[20:59:26] Servidor: ivan ha salido del chat.
+[20:59:29] Servidor: victor ha salido del chat.
+[21:02:39] Servidor: ivan se ha unido al chat.
+[21:02:56] Servidor: victor se ha unido al chat.
+[21:03:00] victor: holaa
+[21:03:04] Servidor: ivan ha salido del chat.
+[21:03:08] Servidor: victor ha salido del chat.

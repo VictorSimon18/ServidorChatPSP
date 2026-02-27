@@ -82,3 +82,15 @@
 [21:03:00] victor: holaa
 [21:03:04] Servidor: ivan ha salido del chat.
 [21:03:08] Servidor: victor ha salido del chat.
+[19:58:14] Servidor: ivan se unió al chat.
+[19:58:16] Servidor: ivan ha salido del chat.
+[20:07:34] Servidor: ivan se unió al chat.
+[20:08:33] Servidor: esther se unió al chat.
+[20:14:00] Servidor: victor se unió al chat.
+[20:14:04] ivan: hola
+[20:14:10] esther: Quetal
+[20:14:18] victor: Bien y vosotros
+[20:14:31] ivan: adios
+[20:19:03] Servidor: victor ha salido del chat.
+[20:19:05] Servidor: esther ha salido del chat.
+[20:19:13] Servidor: ivan ha salido del chat.

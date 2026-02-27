@@ -1,7 +1,7 @@
 package servidor;
 
 /**
- * @deprecated Reemplazado por los handlers HTTP en ServidorChat.
+ * @deprecated Reemplazado por {@link ManejadorClienteTCP} en la arquitectura híbrida HTTP + TCP.
  */
 @Deprecated
 class ManejadorCliente {}

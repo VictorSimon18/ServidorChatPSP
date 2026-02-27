@@ -40,7 +40,7 @@ DNAME="CN=localhost, OU=ChatPSP, O=Universidad, L=Madrid, ST=Madrid, C=ES"
 # SANs: cubre localhost y 127.0.0.1 para desarrollo local
 # Añade más entradas si necesitas conectar desde otra red, p.ej.:
 #   SAN="DNS:localhost,DNS:mi-servidor,IP:127.0.0.1,IP:192.168.1.10"
-SAN="DNS:localhost,IP:127.0.0.1"
+SAN="DNS:localhost,IP:127.0.0.1,IP:192.168.1.16"
 
 # Ruta al ClienteChatPSP (para copiar el truststore automáticamente)
 CLIENTE_CERTS="../ClienteChatPSP/certs"

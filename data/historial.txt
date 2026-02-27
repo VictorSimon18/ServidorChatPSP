@@ -97,3 +97,14 @@
 [22:16:13] Servidor: ivan se unió al chat.
 [22:16:24] Servidor: ivan ha salido del chat.
 [22:16:38] Servidor: ivan se unió al chat.
+[22:17:21] Servidor: ivan ha salido del chat.
+[22:20:22] Servidor: ivan se unió al chat.
+[22:20:32] Servidor: ivan ha salido del chat.
+[22:21:02] Servidor: ivan se unió al chat.
+[22:42:37] Servidor: ivan se unió al chat.
+[22:43:19] Servidor: victor se unió al chat.
+[22:43:25] victor: Hola
+[22:43:45] ivan: la tengo pequita
+[22:43:52] victor: aweonao
+[22:44:17] Servidor: ivan ha salido del chat.
+[22:44:22] Servidor: victor ha salido del chat.

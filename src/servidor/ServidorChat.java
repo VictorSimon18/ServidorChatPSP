@@ -11,25 +11,32 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import javax.net.ssl.*;
 
 /**
- * Punto de entrada del servidor. Arquitectura híbrida HTTP + TCP:
+ * Punto de entrada del servidor. Arquitectura híbrida HTTPS + TCP/TLS:
  *
  * <ul>
- *   <li><b>HTTP (puerto 12345)</b>: login, registro, envío de mensajes, desconexión.</li>
- *   <li><b>TCP  (puerto 12346)</b>: canal persistente para push de mensajes en tiempo real.</li>
+ *   <li><b>HTTPS (puerto 12345)</b>: login, registro, envío de mensajes, desconexión.</li>
+ *   <li><b>TCP/TLS  (puerto 12346)</b>: canal persistente cifrado para push de mensajes
+ *       en tiempo real.</li>
  * </ul>
+ *
+ * <p>Toda la comunicación está cifrada con TLS usando un certificado autofirmado
+ * almacenado en {@code certs/keystore.jks}. Genera los certificados con el script
+ * {@code gen_certs.sh} antes de iniciar el servidor por primera vez.
  *
  * <p>Flujo de conexión:
  * <ol>
- *   <li>El cliente hace login/registro por HTTP.</li>
+ *   <li>El cliente hace login/registro por HTTPS.</li>
  *   <li>El servidor responde con {@code OK|puertoTCP|mensaje}.</li>
- *   <li>El cliente abre un socket TCP a {@code puertoTCP} y envía su nombre de usuario.</li>
+ *   <li>El cliente abre un {@link SSLSocket} al {@code puertoTCP}.</li>
  *   <li>{@link ManejadorClienteTCP} registra el socket en {@link GestorMensajes}.</li>
- *   <li>Desde ese momento, el servidor hace push de mensajes por TCP.</li>
+ *   <li>Desde ese momento, el servidor hace push cifrado de mensajes por TCP/TLS.</li>
  * </ol>
  */
 public class ServidorChat {
@@ -37,7 +44,10 @@ public class ServidorChat {
     private static final int PUERTO_HTTP_DEFAULT = 12345;
     private static final int PUERTO_TCP_DEFAULT  = 12346;
 
-    public static void main(String[] args) throws IOException {
+    /** Ruta al keystore JKS que contiene el certificado y la clave privada del servidor. */
+    private static final String KEYSTORE_PATH = "certs/keystore.jks";
+
+    public static void main(String[] args) {
         int puertoHttp = PUERTO_HTTP_DEFAULT;
         int puertoTcp  = PUERTO_TCP_DEFAULT;
 
@@ -50,6 +60,20 @@ public class ServidorChat {
             catch (NumberFormatException e) { System.out.println("Puerto TCP inválido. Usando " + PUERTO_TCP_DEFAULT); }
         }
 
+        // ── Contexto SSL/TLS: carga keystore y configura TLS ─────────────────
+        SSLContext sslContext;
+        try {
+            sslContext = crearSSLContext();
+            System.out.println("=== TLS habilitado (certificado cargado desde " + KEYSTORE_PATH + ") ===");
+        } catch (FileNotFoundException e) {
+            System.err.println("ERROR: No se encontró el keystore en '" + KEYSTORE_PATH + "'.");
+            System.err.println("       Ejecuta gen_certs.sh para generar los certificados.");
+            return;
+        } catch (Exception e) {
+            System.err.println("ERROR al inicializar TLS: " + e.getMessage());
+            return;
+        }
+
         // ── Proceso hijo para historial ──────────────────────────────────────
         Process procesoHistorial = lanzarProcesoHistorial();
         if (procesoHistorial != null) {
@@ -59,53 +83,106 @@ public class ServidorChat {
             System.err.println("No se pudo iniciar el historial. Continuando sin él.");
         }
 
-        // ── Servidor TCP: acepta conexiones persistentes de clientes ─────────
-        HiloAceptadorTCP hiloTCP = new HiloAceptadorTCP(puertoTcp);
+        // ── Servidor TCP/TLS: acepta conexiones persistentes cifradas ─────────
+        HiloAceptadorTCP hiloTCP = new HiloAceptadorTCP(puertoTcp, sslContext.getServerSocketFactory());
         hiloTCP.setDaemon(true);
         hiloTCP.start();
 
-        // ── Servidor HTTP: gestiona operaciones request-response ─────────────
-        final int finalPuertoTcp = puertoTcp;
-        HttpServer server = HttpServer.create(new InetSocketAddress(puertoHttp), 0);
-        server.createContext("/login",       new LoginHandler(finalPuertoTcp));
-        server.createContext("/register",    new RegisterHandler());
-        server.createContext("/mensaje",     new MensajeHandler());
-        server.createContext("/desconectar", new DesconectarHandler());
-        server.setExecutor(Executors.newCachedThreadPool());
-        server.start();
+        // ── Servidor HTTPS: gestiona operaciones request-response ─────────────
+        try {
+            final int finalPuertoTcp = puertoTcp;
+            HttpsServer server = HttpsServer.create(new InetSocketAddress(puertoHttp), 0);
+            server.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
+                /**
+                 * Configura TLS por conexión usando un {@link SSLEngine} real para
+                 * obtener los cipher suites y protocolos efectivamente habilitados,
+                 * evitando cuelgues en el handshake por parámetros incompatibles.
+                 */
+                @Override
+                public void configure(HttpsParameters params) {
+                    SSLContext c = getSSLContext();
+                    SSLEngine  engine = c.createSSLEngine();
+                    params.setNeedClientAuth(false);
+                    params.setCipherSuites(engine.getEnabledCipherSuites());
+                    params.setProtocols(engine.getEnabledProtocols());
+                    params.setSSLParameters(c.getDefaultSSLParameters());
+                }
+            });
+            server.createContext("/login",       new LoginHandler(finalPuertoTcp));
+            server.createContext("/register",    new RegisterHandler());
+            server.createContext("/mensaje",     new MensajeHandler());
+            server.createContext("/desconectar", new DesconectarHandler());
+            server.setExecutor(Executors.newCachedThreadPool());
+            server.start();
 
-        System.out.println("=== Servidor HTTP iniciado en puerto " + puertoHttp + " ===");
-        System.out.println("=== Servidor TCP  iniciado en puerto " + puertoTcp  + " ===");
-        System.out.println("Esperando conexiones...");
+            System.out.println("=== Servidor HTTPS iniciado en puerto " + puertoHttp + " ===");
+            System.out.println("=== Servidor TCP/TLS iniciado en puerto " + puertoTcp  + " ===");
+            System.out.println("Esperando conexiones...");
+        } catch (IOException e) {
+            System.err.println("ERROR al iniciar el servidor HTTPS: " + e.getMessage());
+        }
     }
 
-    // ── Hilo aceptador TCP ───────────────────────────────────────────────────
+    // ── SSL/TLS ───────────────────────────────────────────────────────────────
 
     /**
-     * Hilo daemon que escucha en el puerto TCP y crea un {@link ManejadorClienteTCP}
-     * por cada nueva conexión entrante.
+     * Crea y configura el {@link SSLContext} del servidor a partir del keystore JKS.
+     *
+     * <p>El keystore se carga desde {@value #KEYSTORE_PATH}. La contraseña puede
+     * sobreescribirse con la propiedad de sistema {@code ssl.keystore.password}
+     * (valor por defecto: {@code changeit}, generado por {@code gen_certs.sh}).
+     *
+     * @return {@link SSLContext} listo para configurar {@link HttpsServer} y
+     *         {@link SSLServerSocket}.
+     * @throws FileNotFoundException si el keystore no existe en la ruta esperada.
+     * @throws Exception             si el keystore está dañado o la contraseña es incorrecta.
+     */
+    private static SSLContext crearSSLContext() throws Exception {
+        char[] password = System.getProperty("ssl.keystore.password", "changeit").toCharArray();
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        try (FileInputStream fis = new FileInputStream(KEYSTORE_PATH)) {
+            keyStore.load(fis, password);
+        }
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmf.init(keyStore, password);
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(kmf.getKeyManagers(), null, null);
+        return ctx;
+    }
+
+    // ── Hilo aceptador TCP/TLS ────────────────────────────────────────────────
+
+    /**
+     * Hilo daemon que escucha en el puerto TCP/TLS y crea un {@link ManejadorClienteTCP}
+     * por cada nueva conexión cifrada entrante.
+     *
+     * <p>El {@link SSLServerSocketFactory} inyectado proviene del mismo {@link SSLContext}
+     * que el servidor HTTPS, garantizando una configuración TLS uniforme en ambos canales.
      */
     static class HiloAceptadorTCP extends Thread {
 
-        private final int puerto;
+        private final int                    puerto;
+        /** Factoría SSL compartida con el servidor HTTPS para crear sockets TLS. */
+        private final SSLServerSocketFactory socketFactory;
 
-        HiloAceptadorTCP(int puerto) {
-            this.puerto = puerto;
+        HiloAceptadorTCP(int puerto, SSLServerSocketFactory socketFactory) {
+            this.puerto        = puerto;
+            this.socketFactory = socketFactory;
             setName("AceptadorTCP");
             setDaemon(true);
         }
 
         @Override
         public void run() {
-            try (ServerSocket serverSocket = new ServerSocket(puerto)) {
-                System.out.println("[TCP] Escuchando en puerto " + puerto);
+            try (ServerSocket serverSocket = socketFactory.createServerSocket(puerto)) {
+                System.out.println("[TCP/TLS] Escuchando en puerto " + puerto);
                 while (!Thread.interrupted()) {
-                    Socket socketCliente = serverSocket.accept(); // bloquea hasta nueva conexión
+                    Socket socketCliente = serverSocket.accept(); // bloquea hasta nueva conexión TLS
                     ManejadorClienteTCP manejador = new ManejadorClienteTCP(socketCliente);
                     manejador.start();
                 }
             } catch (IOException e) {
-                System.err.println("[TCP] Error en servidor TCP: " + e.getMessage());
+                System.err.println("[TCP/TLS] Error en servidor TCP: " + e.getMessage());
             }
         }
     }

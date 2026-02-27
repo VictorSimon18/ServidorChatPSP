@@ -94,3 +94,6 @@
 [20:19:03] Servidor: victor ha salido del chat.
 [20:19:05] Servidor: esther ha salido del chat.
 [20:19:13] Servidor: ivan ha salido del chat.
+[22:16:13] Servidor: ivan se unió al chat.
+[22:16:24] Servidor: ivan ha salido del chat.
+[22:16:38] Servidor: ivan se unió al chat.

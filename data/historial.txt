@@ -108,3 +108,20 @@
 [22:43:52] victor: aweonao
 [22:44:17] Servidor: ivan ha salido del chat.
 [22:44:22] Servidor: victor ha salido del chat.
+[12:52:55] Servidor: ivan se unió al chat.
+[12:53:10] Servidor: victor se unió al chat.
+[12:53:40] ivan: holá
+[12:53:42] Servidor: ivan ha salido del chat.
+[12:53:44] Servidor: victor ha salido del chat.
+[13:00:58] Servidor: ivan se unió al chat.
+[13:01:05] Servidor: victor se unió al chat.
+[13:01:07] victor: hola
+[13:01:11] ivan: puto
+[13:01:14] Servidor: ivan ha salido del chat.
+[13:01:16] Servidor: victor ha salido del chat.
+[13:04:15] Servidor: sergio se unió al chat.
+[13:09:00] Servidor: ivan se unió al chat.
+[13:09:13] Servidor: victor se unió al chat.
+[13:09:15] victor: hola
+[13:09:18] Servidor: ivan ha salido del chat.
+[13:09:19] Servidor: victor ha salido del chat.

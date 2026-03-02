@@ -189,8 +189,14 @@ public class ServidorChat {
 
     // ── Utilidades ───────────────────────────────────────────────────────────
 
-    static Map<String, String> parsearCuerpo(InputStream is) throws IOException {
-        return parsearPares(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+    static Map<String, String> parsearCuerpo(HttpExchange ex) throws IOException {
+        String cl = ex.getRequestHeaders().getFirst("Content-Length");
+        if (cl == null || cl.isBlank()) return new HashMap<>();
+        int length;
+        try { length = Integer.parseInt(cl.trim()); }
+        catch (NumberFormatException e) { return new HashMap<>(); }
+        if (length <= 0) return new HashMap<>();
+        return parsearPares(new String(ex.getRequestBody().readNBytes(length), StandardCharsets.UTF_8));
     }
 
     static Map<String, String> parsearQuery(String query) {
@@ -236,7 +242,7 @@ public class ServidorChat {
             if (!ex.getRequestMethod().equalsIgnoreCase("POST")) {
                 responder(ex, 405, "ERROR|Método no permitido"); return;
             }
-            Map<String, String> p = parsearCuerpo(ex.getRequestBody());
+            Map<String, String> p = parsearCuerpo(ex);
             String nombre   = p.getOrDefault("usuario",  "");
             String password = p.getOrDefault("password", "");
             GestorMensajes g = GestorMensajes.getInstancia();
@@ -268,7 +274,7 @@ public class ServidorChat {
             if (!ex.getRequestMethod().equalsIgnoreCase("POST")) {
                 responder(ex, 405, "ERROR|Método no permitido"); return;
             }
-            Map<String, String> p = parsearCuerpo(ex.getRequestBody());
+            Map<String, String> p = parsearCuerpo(ex);
             String nombre   = p.getOrDefault("usuario",  "");
             String password = p.getOrDefault("password", "");
             GestorMensajes g = GestorMensajes.getInstancia();
@@ -296,7 +302,7 @@ public class ServidorChat {
             if (!ex.getRequestMethod().equalsIgnoreCase("POST")) {
                 responder(ex, 405, "ERROR|Método no permitido"); return;
             }
-            Map<String, String> p = parsearCuerpo(ex.getRequestBody());
+            Map<String, String> p = parsearCuerpo(ex);
             String nombre    = p.getOrDefault("usuario",   "");
             String contenido = p.getOrDefault("contenido", "");
             GestorMensajes g = GestorMensajes.getInstancia();
@@ -345,7 +351,7 @@ public class ServidorChat {
 
         @Override
         public void handle(HttpExchange ex) throws IOException {
-            Map<String, String> p = parsearCuerpo(ex.getRequestBody());
+            Map<String, String> p = parsearCuerpo(ex);
             GestorMensajes.getInstancia().desconectarCliente(p.getOrDefault("usuario", ""));
             responder(ex, 200, "OK");
         }
